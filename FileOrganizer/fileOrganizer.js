@@ -5,6 +5,9 @@
 //3 //read folder
 
 // 4 differenstiate file
+
+// 5 // create folder
+
 let fs = require("fs");
 // let folderPath = process.argv[2];
 // or
@@ -29,7 +32,16 @@ if(folderExists){
         let ext = path.extname(files[i]);
         // console.log(ext);
         let nameOfFolder = giveFolderName(ext);
-        console.log("ext.." , ext,"folder..",nameOfFolder);
+        // console.log("ext.." , ext,"folder..",nameOfFolder);
+        let pathOfFolder = path.join(folderPath,nameOfFolder);
+        let exist = fs.existsSync(pathOfFolder);
+        if(exist){
+            moveFile(folderPath,pathOfFolder,files[i]);
+        }else{
+            //create folder
+            fs.mkdirSync(pathOfFolder);
+            moveFile(folderPath,pathOfFolder,files[i]);
+        }
     }
 }else{
     console.log("please enter a valid path");
@@ -46,4 +58,11 @@ function giveFolderName(ext){
         }
     }
     return 'others';
+}
+
+function moveFile(folderPath,pathOfFolder,fileName){
+    let sourcePath = path.join(folderPath,fileName);
+    let destinationPath = path.join(pathOfFolder,fileName);
+    fs.copyFileSync(sourcePath,destinationPath);
+    fs.unlinkSync(sourcePath);
 }
